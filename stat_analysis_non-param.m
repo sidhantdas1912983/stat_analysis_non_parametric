@@ -6,6 +6,7 @@ col75 = PS(:,3);
 col100 = PS(:,4);
 col125 = PS(:,5);
 %%
+%can be modified as per user
 [p1,v1] = signrank(col25,col50);
 [p2,v2] = signrank(col25,col75);
 [p3,v3] = signrank(col25,col100);
@@ -18,8 +19,9 @@ col125 = PS(:,5);
 [p10,v10] = signrank(col100,col125);
 
 %%
-%p = [p1; p2; p3; p4;p5;p6;p7;p8;p9;p10 ];
-p = [0.001953125;0.001953125;0.000854492;0.000732422;0.234375;0.0625;0.03515625;0.625;0.25;1];
+%can be modified as per user 
+p = [p1; p2; p3; p4;p5;p6;p7;p8;p9;p10 ];
+
 q = sort(p);
 old_result =zeros(length(p),1);
 
