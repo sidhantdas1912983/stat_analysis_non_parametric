@@ -34,8 +34,8 @@ end
 %%
 fp = 0.05;
 q = sort(p);
-if length(unique(q)) == length(q)
-    
+if length(unique(q)) == length(q)%checking if the p-values are all distinct or some duplicates are also present.
+ %Benjamin Hochberh with unique p=values  
     x = zeros(length(q),1);
     h = zeros(length(q),1);
     for i = 1:length(q)
@@ -49,6 +49,7 @@ if length(unique(q)) == length(q)
     a = ["25-100";"25-125";"25-75";"50-125";"50-100";"25-50";"50-75";"75-120";"75-100";"100-125"];
     Summary = ["pairwise p-vals", "sorted p-values", "adjusted p-values", "result";a q x h];
 else
+    % Benjamin hochberg with repeated p-values 
     Q = benjamin_hochberg_equalp(q);
     x = zeros(length(q),1);
     h = zeros(length(q),1);
