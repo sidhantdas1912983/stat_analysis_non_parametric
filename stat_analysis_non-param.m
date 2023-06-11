@@ -6,7 +6,7 @@ col75 = PS(:,3);
 col100 = PS(:,4);
 col125 = PS(:,5);
 %%
-%can be modified as per user
+%Only if u need to find pvalues for a pairwise experiment using wilcoxon signed rank test
 [p1,v1] = signrank(col25,col50);
 [p2,v2] = signrank(col25,col75);
 [p3,v3] = signrank(col25,col100);
@@ -19,9 +19,7 @@ col125 = PS(:,5);
 [p10,v10] = signrank(col100,col125);
 
 %%
-%can be modified as per user 
-p = [p1; p2; p3; p4;p5;p6;p7;p8;p9;p10 ];
-
+p = [p1; p2; p3; p4;p5;p6;p7;p8;p9;p10 ];%can be modified as per your requirement
 q = sort(p);
 old_result =zeros(length(p),1);
 
@@ -36,8 +34,8 @@ end
 %%
 fp = 0.05;
 q = sort(p);
-if length(unique(q)) == length(q)%checking if the p-values are all distinct or some duplicates are also present.
- %Benjamin Hochberh with unique p=values  
+if length(unique(q)) == length(q)
+% Finds adjusted pvalue and test hypothesis when unique p values are present    
     x = zeros(length(q),1);
     h = zeros(length(q),1);
     for i = 1:length(q)
@@ -48,12 +46,14 @@ if length(unique(q)) == length(q)%checking if the p-values are all distinct or s
             h(i) =0;%%%%accept null hypothesis : statistically similar
         end
     end
-    a = ["25-100";"25-125";"25-75";"50-125";"50-100";"25-50";"50-75";"75-120";"75-100";"100-125"];
-    Summary = ["pairwise p-vals", "sorted p-values", "adjusted p-values", "result";a q x h];
+    for i=1:length(q)
+        ap(i) = (q(i)*length(q))/Q(i);
+    end
 else
-    % Benjamin hochberg with repeated p-values 
+% Finds adjusted pvalue and test hypothesis when identical p values are present
     Q = benjamin_hochberg_equalp(q);
     x = zeros(length(q),1);
+    ap = zeros(length(q),1);
     h = zeros(length(q),1);
     for i = 1:length(q)
         x(i) = (fp*(Q(i)/length(p)));
@@ -63,10 +63,24 @@ else
             h(i) =0;%%%%accept null hypothesis : statistically similar
         end
     end
-    a = ["25-100";"25-125";"25-75";"50-125";"50-100";"25-50";"50-75";"75-120";"75-100";"100-125"];
-    Summary = ["pairwise p-vals", "sorted p-values", "adjusted p-values", "result";a q x h];
+    for i=1:length(q)
+        ap(i) = (q(i)*length(q))/Q(i);
+    end
     
 end
+us = [];
+for i = 1:length(p)
+    us(i)=find(q==p(i),1);
+end
+h = h(us);
+x = x(us);
+ap = ap(us);
+a = ["25-100";"25-125";"25-75";"50-125";"50-100";"25-50";"50-75";"75-120";"75-100";"100-125"];
+Summary = ["pairwise p-vals", "old p-values", "new critical vals","adjusted p vals","result";a p x ap h];
+    
+
+%just unsorting the sorted array
+
  
 function [rankwise_matrix] = benjamin_hochberg_equalp(s)
     [v,w,rak]= unique(s);
